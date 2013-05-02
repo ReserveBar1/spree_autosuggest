@@ -4,7 +4,7 @@ class @Autosuggest
     return if @search_field.length == 0
 
     @settings =
-      from_db: 15
+      from_db: 45
       to_display: 5
       keyswitch: true
     @settings = $.extend @settings, options
@@ -47,7 +47,7 @@ class @Autosuggest
     result
 
   filter_terms: (array, term) ->
-      matcher = new RegExp($.ui.autocomplete.escapeRegex(term), "i")
+      matcher = new RegExp("\\b" + $.ui.autocomplete.escapeRegex(term), "i")
       $.grep array, (value) =>
         source = value.keywords or value.value or value
 				
@@ -57,7 +57,11 @@ class @Autosuggest
 
   extension_methods: ->
     _renderItem: (ul, item) ->
+        if item.url is ""
+        	item.url = '/products?utf8=✓&keywords='+item.keywords
+        	
         item.keywords = item.keywords.replace(new RegExp("(" + $.ui.autocomplete.escapeRegex(@term) + ")", "gi"), "<strong>$1</strong>")
+        
         $("<li></li>").data("item.autocomplete", item).append("<a href=" + item.url + ">" + item.keywords + "</a>").appendTo ul
 
   keyswitch: (str) ->
